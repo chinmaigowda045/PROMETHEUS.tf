@@ -1,0 +1,1 @@
+This terraform code is to create 3 instances for configuring k8s on them.
