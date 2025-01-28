@@ -11,7 +11,7 @@ jobs:
     steps:
       # Checkout the repository.
       - checkout
-      # Install yamllint via pip.
+      # Install yamllint via pip
       - run:
           name: Install yamllint
           command: |
@@ -45,17 +45,11 @@ jobs:
       - checkout
       # Set up remote Docker and authenticate
       - setup_remote_docker:
-          version: 20.10.7  # Set the Docker version
           docker_layer_caching: true  # Optional: speeds up builds
       - run:
           name: Log in to Docker Hub
           command: |
             echo $DOCKER_PASSWORD | docker login --username $DOCKER_USERNAME --password-stdin
-      # Pull the TFLint Docker image
-      - run:
-          name: Pull TFLint Docker image
-          command: |
-            docker pull philips-labs/tflint:latest
       # Run tflint on all .tf files.
       - run:
           name: Run tflint
