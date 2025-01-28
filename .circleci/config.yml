@@ -36,7 +36,6 @@ jobs:
           name: Run TFLint
           command: |
             tflint **/*.tf  # Run TFLint on all .tf files
-
   # Job to say hello
   say-hello:
     docker:
@@ -52,13 +51,7 @@ workflows:
   version: 2
   say-hello-workflow:
     jobs:
-      - yamllint  # Run yamllint job first
-      - terraform-validate:  # Run terraform validate job second
-          requires:
-            - yamllint  # Ensure terraform-validate runs after yamllint
-      - tflint:  # Run tflint job third
-          requires:
-            - terraform-validate  # Ensure tflint runs after terraform validate
-      - say-hello:  # Run say-hello job last
-          requires:
-            - tflint  # Ensure say-hello runs after tflint
+      - yamllint
+      - terraform-validate
+      - tflint
+      - say-hello
