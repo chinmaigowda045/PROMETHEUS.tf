@@ -48,40 +48,49 @@ jobs:
           name: Install curl and unzip
           command: |
             apk update && apk add --no-cache curl unzip
+            if [ $? -ne 0 ]; then
+              echo "Error installing curl or unzip. Exiting."
+              exit 1
+            fi
       # Install TFLint
       - run:
           name: Download and Install TFLint
           command: |
-            # Download TFLint
-            curl -Lo tflint.zip https://github.com/terraform-linters/tflint/releases/download/v0.33.0/tflint-linux-amd64.zip
+            # Download TFLint (Latest stable release)
+            echo "Downloading TFLint..."
+            curl -LO https://github.com/terraform-linters/tflint/releases/download/v0.34.0/tflint-linux-amd64.zip
             
             # Check if curl succeeded
             if [ $? -ne 0 ]; then
               echo "Error downloading TFLint. Exiting."
               exit 1
             fi
-            
+
             # Unzip the downloaded file
-            unzip tflint.zip
+            echo "Unzipping TFLint..."
+            unzip tflint-linux-amd64.zip
             if [ $? -ne 0 ]; then
               echo "Error unzipping TFLint. Exiting."
               exit 1
             fi
-            
+
             # Make the binary executable and move it to /usr/local/bin
+            echo "Making TFLint executable and moving to /usr/local/bin..."
             chmod +x tflint
             sudo mv tflint /usr/local/bin/tflint
             if [ $? -ne 0 ]; then
               echo "Error moving TFLint to /usr/local/bin. Exiting."
               exit 1
             fi
-            
+
             # Clean up the ZIP file
-            rm tflint.zip
+            echo "Cleaning up..."
+            rm tflint-linux-amd64.zip
       # Run tflint on all .tf files
       - run:
           name: Run tflint
           command: |
+            echo "Running TFLint on .tf files..."
             tflint **/*.tf
 
   # Job to say hello (or whatever other job you have).
