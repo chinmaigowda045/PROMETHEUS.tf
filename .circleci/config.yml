@@ -43,6 +43,11 @@ jobs:
     steps:
       # Checkout the repository
       - checkout
+      # Install required dependencies (curl, unzip)
+      - run:
+          name: Install curl and unzip
+          command: |
+            apt-get update && apt-get install -y curl unzip
       # Install TFLint
       - run:
           name: Install tflint
