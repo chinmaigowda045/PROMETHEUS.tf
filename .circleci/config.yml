@@ -2,19 +2,65 @@
 # See: https://circleci.com/docs/configuration-reference
 version: 2.1
 
-# Define a job to be invoked later in a workflow.
-# See: https://circleci.com/docs/jobs-steps/#jobs-overview & https://circleci.com/docs/configuration-reference/#jobs
+# Define jobs to be invoked later in the workflow.
 jobs:
-  say-hello:
-    # Specify the execution environment. You can specify an image from Docker Hub or use one of our convenience images from CircleCI's Developer Hub.
-    # See: https://circleci.com/docs/executor-intro/ & https://circleci.com/docs/configuration-reference/#executor-job
+  # Job to lint the YAML files.
+  yamllint:
     docker:
-      # Specify the version you desire here
-      # See: https://circleci.com/developer/images/image/cimg/base
-      - image: cimg/base:current
+      - image: cimg/python:3.9  # Use a CircleCI Python image
+    steps:
+      # Checkout the repository.
+      - checkout
+      # Install yamllint via pip.
+      - run:
+          name: Install yamllint
+          command: |
+            pip install yamllint
+      # Run yamllint on all YAML files in the repo.
+      - run:
+          name: Run yamllint
+          command: |
+            yamllint **/*.yml
 
-    # Add steps to the job
-    # See: https://circleci.com/docs/jobs-steps/#steps-overview & https://circleci.com/docs/configuration-reference/#steps
+  # Job to validate Terraform files using `terraform validate`.
+  terraform-validate:
+    docker:
+      - image: hashicorp/terraform:latest  # Use HashiCorp's Terraform Docker image
+    steps:
+      # Checkout the repository.
+      - checkout
+      # Run terraform validate to check if the Terraform files are valid.
+      - run:
+          name: Run terraform validate
+          command: |
+            terraform init  # Initialize Terraform
+            terraform validate  # Validate the Terraform files
+
+  # Job to lint Terraform files using `tflint`.
+  tflint:
+    docker:
+      - image: philips-labs/tflint:latest  # Use the TFLint Docker image
+    steps:
+      # Checkout the repository.
+      - checkout
+      # Install tflint and lint the Terraform files.
+      - run:
+          name: Install tflint
+          command: |
+            curl -Lo tflint.zip https://github.com/terraform-linters/tflint/releases/download/v0.33.0/tflint-linux-amd64.zip
+            unzip tflint.zip
+            chmod +x tflint
+            mv tflint /usr/local/bin/tflint
+      # Run tflint on all .tf files.
+      - run:
+          name: Run tflint
+          command: |
+            tflint **/*.tf
+
+  # Job to say hello (or whatever other job you have).
+  say-hello:
+    docker:
+      - image: cimg/base:current
     steps:
       # Checkout the code as the first step.
       - checkout
@@ -22,10 +68,12 @@ jobs:
           name: "Say hello"
           command: "echo Hello, World!"
 
-# Orchestrate jobs using workflows
-# See: https://circleci.com/docs/workflows/ & https://circleci.com/docs/configuration-reference/#workflows
+# Define workflows to orchestrate jobs.
 workflows:
-  say-hello-workflow: # This is the name of the workflow, feel free to change it to better match your workflow.
-    # Inside the workflow, you define the jobs you want to run.
+  version: 2
+  say-hello-workflow:
     jobs:
-      - say-hello
+      - yamllint  # Run yamllint job first
+      - terraform-validate  # Run terraform validate job second
+      - tflint  # Run tflint job third
+      - say-hello  # Run say-hello job afterwards
