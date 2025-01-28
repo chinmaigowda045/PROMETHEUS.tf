@@ -50,12 +50,34 @@ jobs:
             apk update && apk add --no-cache curl unzip
       # Install TFLint
       - run:
-          name: Install tflint
+          name: Download and Install TFLint
           command: |
+            # Download TFLint
             curl -Lo tflint.zip https://github.com/terraform-linters/tflint/releases/download/v0.33.0/tflint-linux-amd64.zip
+            
+            # Check if curl succeeded
+            if [ $? -ne 0 ]; then
+              echo "Error downloading TFLint. Exiting."
+              exit 1
+            fi
+            
+            # Unzip the downloaded file
             unzip tflint.zip
+            if [ $? -ne 0 ]; then
+              echo "Error unzipping TFLint. Exiting."
+              exit 1
+            fi
+            
+            # Make the binary executable and move it to /usr/local/bin
             chmod +x tflint
-            mv tflint /usr/local/bin/tflint
+            sudo mv tflint /usr/local/bin/tflint
+            if [ $? -ne 0 ]; then
+              echo "Error moving TFLint to /usr/local/bin. Exiting."
+              exit 1
+            fi
+            
+            # Clean up the ZIP file
+            rm tflint.zip
       # Run tflint on all .tf files
       - run:
           name: Run tflint
