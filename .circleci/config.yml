@@ -43,14 +43,19 @@ jobs:
     steps:
       # Checkout the repository.
       - checkout
-      # Install tflint and lint the Terraform files.
+      # Set up remote Docker and authenticate
+      - setup_remote_docker:
+          version: 20.10.7  # Set the Docker version
+          docker_layer_caching: true  # Optional: speeds up builds
       - run:
-          name: Install tflint
+          name: Log in to Docker Hub
           command: |
-            curl -Lo tflint.zip https://github.com/terraform-linters/tflint/releases/download/v0.33.0/tflint-linux-amd64.zip
-            unzip tflint.zip
-            chmod +x tflint
-            mv tflint /usr/local/bin/tflint
+            echo $DOCKER_PASSWORD | docker login --username $DOCKER_USERNAME --password-stdin
+      # Pull the TFLint Docker image
+      - run:
+          name: Pull TFLint Docker image
+          command: |
+            docker pull philips-labs/tflint:latest
       # Run tflint on all .tf files.
       - run:
           name: Run tflint
