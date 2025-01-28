@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   yamllint:
     docker:
-      - image: cimg/python:3.9  # Use a CircleCI Python image
+      - image: cimg/python:3.9
     steps:
       - checkout
       - run:
@@ -17,7 +17,7 @@ jobs:
 
   terraform-validate:
     docker:
-      - image: hashicorp/terraform:latest  # Use HashiCorp's Terraform Docker image
+      - image: hashicorp/terraform:latest
     steps:
       - checkout
       - run:
@@ -26,17 +26,16 @@ jobs:
             terraform init
             terraform validate
 
-  # Job to lint Terraform files using TFLint
   tflint:
     docker:
-      - image: stagex/tflint:latest  # Using the stagex/tflint image
+      - image: chinmaigowda/terraform-tflint:latest1  # Use your custom image
     steps:
       - checkout
       - run:
           name: Run TFLint
           command: |
-            tflint **/*.tf  # Run TFLint on all .tf files
-  # Job to say hello
+            tflint **/*.tf
+
   say-hello:
     docker:
       - image: cimg/base:current
