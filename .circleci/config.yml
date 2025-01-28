@@ -29,7 +29,7 @@ jobs:
   # Job to lint Terraform files using TFLint
   tflint:
     docker:
-      - image: chinmaigowda/terraform-tflint:latest  # Use your custom image
+      - image: stagex/tflint:latest  # Use your custom image
     steps:
       - checkout
       # Run tflint on all Terraform files
