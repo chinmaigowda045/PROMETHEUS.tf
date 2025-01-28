@@ -65,6 +65,15 @@ jobs:
               exit 1
             fi
 
+            # Verify the file was downloaded properly (check file size)
+            FILE_SIZE=$(stat -c %s tflint-linux-amd64.zip)
+            if [ "$FILE_SIZE" -lt 1000 ]; then
+              echo "TFLint zip file is too small (likely not downloaded properly). Exiting."
+              exit 1
+            fi
+
+            echo "Downloaded file size: $FILE_SIZE bytes."
+
             # Unzip the downloaded file
             echo "Unzipping TFLint..."
             unzip tflint-linux-amd64.zip
@@ -76,7 +85,7 @@ jobs:
             # Make the binary executable and move it to /usr/local/bin
             echo "Making TFLint executable and moving to /usr/local/bin..."
             chmod +x tflint
-            sudo mv tflint /usr/local/bin/tflint
+            mv tflint /usr/local/bin/tflint
             if [ $? -ne 0 ]; then
               echo "Error moving TFLint to /usr/local/bin. Exiting."
               exit 1
@@ -85,6 +94,7 @@ jobs:
             # Clean up the ZIP file
             echo "Cleaning up..."
             rm tflint-linux-amd64.zip
+            echo "TFLint installation completed successfully!"
       # Run tflint on all .tf files
       - run:
           name: Run tflint
