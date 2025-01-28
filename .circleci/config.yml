@@ -39,18 +39,19 @@ jobs:
   # Job to lint Terraform files using `tflint`.
   tflint:
     docker:
-      - image: philips-labs/tflint:latest  # Use the TFLint Docker image
+      - image: hashicorp/terraform:latest  # Using the Terraform image
     steps:
-      # Checkout the repository.
+      # Checkout the repository
       - checkout
-      # Set up remote Docker and authenticate
-      - setup_remote_docker:
-          docker_layer_caching: true  # Optional: speeds up builds
+      # Install TFLint
       - run:
-          name: Log in to Docker Hub
+          name: Install tflint
           command: |
-            echo $DOCKER_PASSWORD | docker login --username $DOCKER_USERNAME --password-stdin
-      # Run tflint on all .tf files.
+            curl -Lo tflint.zip https://github.com/terraform-linters/tflint/releases/download/v0.33.0/tflint-linux-amd64.zip
+            unzip tflint.zip
+            chmod +x tflint
+            mv tflint /usr/local/bin/tflint
+      # Run tflint on all .tf files
       - run:
           name: Run tflint
           command: |
