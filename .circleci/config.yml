@@ -28,13 +28,14 @@ jobs:
 
   tflint:
     docker:
-      - image: chinmaigowda/terraform-tflint:latest1  # Use your custom image
+      - image: chinmaigowda/terraform-tflint:latest1
     steps:
       - checkout
       - run:
           name: Run TFLint
           command: |
-            tflint **/*.tf
+            /bin/bash -c "tflint **/*.tf"
+
 
   say-hello:
     docker:
