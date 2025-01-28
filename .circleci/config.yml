@@ -29,13 +29,13 @@ jobs:
   # Job to lint Terraform files using TFLint
   tflint:
     docker:
-      - image: stagex/tflint:latest  # Use stagex/tflint image
+      - image: stagex/tflint:latest  # Using the stagex/tflint image
     steps:
       - checkout
       - run:
           name: Run TFLint
           command: |
-            /usr/local/bin/tflint **/*.tf  # Run TFLint directly with its full path
+            tflint **/*.tf  # Run TFLint on all .tf files
 
   # Job to say hello
   say-hello:
@@ -52,7 +52,13 @@ workflows:
   version: 2
   say-hello-workflow:
     jobs:
-      - yamllint
-      - terraform-validate
-      - tflint
-      - say-hello
+      - yamllint  # Run yamllint job first
+      - terraform-validate:  # Run terraform validate job second
+          requires:
+            - yamllint  # Ensure terraform-validate runs after yamllint
+      - tflint:  # Run tflint job third
+          requires:
+            - terraform-validate  # Ensure tflint runs after terraform validate
+      - say-hello:  # Run say-hello job last
+          requires:
+            - tflint  # Ensure say-hello runs after tflint
