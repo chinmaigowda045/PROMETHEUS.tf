@@ -58,7 +58,7 @@ jobs:
           command: |
             # Download TFLint (Latest stable release)
             echo "Downloading TFLint..."
-            curl -LO https://github.com/terraform-linters/tflint/releases/download/v0.34.0/tflint-linux-amd64.zip
+            curl -LO https://github.com/terraform-linters/tflint/releases/download/v0.55.0tflint-linux-amd64.zip
             
             # Check if curl succeeded
             if [ $? -ne 0 ]; then
