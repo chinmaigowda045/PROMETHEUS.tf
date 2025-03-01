@@ -18,6 +18,15 @@ resource "local_file" "pem_key_file_path" {
 #to create a security group with ssh port 22 access
 resource "aws_security_group" "SG_all_traffic" {
   name = var.security_group_name
+  vpc_id = var.VPC_ID
+}
+# Explicitly allow SSH (port 22) for inbound traffic
+resource "aws_vpc_security_group_ingress_rule" "SG_ssh_ingress" {
+  security_group_id = aws_security_group.SG_all_traffic.id
+  cidr_ipv4 = "0.0.0.0/0"  # Allows SSH from anywhere. You can restrict this to your IP if needed.
+  from_port = 22
+  ip_protocol = "tcp"
+  to_port = 22
 }
 resource "aws_vpc_security_group_ingress_rule" "SG_all_traffic_ingress" {
   security_group_id = aws_security_group.SG_all_traffic.id
@@ -36,7 +45,7 @@ resource "aws_vpc_security_group_egress_rule" "SG_all_traffic_egress" {
 # for creation of ec2 instances using all above resources
 resource "aws_instance" "Master" {
   count = 1
-  ami           = "ami-04b4f1a9cf54c11d0"
+  ami           = "ami-0e1bed4f06a3b463d"
   instance_type = var.master_instance_type
   key_name = aws_key_pair.rsa_pem_key_create.key_name    # calling the created pem key
   subnet_id = var.Public_Subnet_id
@@ -48,7 +57,7 @@ resource "aws_instance" "Master" {
 }
 resource "aws_instance" "Workers" {
   count = 2
-  ami           = "ami-04b4f1a9cf54c11d0" 
+  ami           = "ami-0e1bed4f06a3b463d" 
   instance_type = var.Worker_instance_type
   key_name = aws_key_pair.rsa_pem_key_create.key_name    # calling the created pem key
   subnet_id = var.Public_Subnet_id     # calling the subnet from other module, possible only after mentioning it in root module

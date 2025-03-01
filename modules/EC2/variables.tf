@@ -22,3 +22,7 @@ variable "Public_Subnet_id" {
   type = string
   default = ""
 }
+variable "VPC_ID" {
+  type = string
+  default = ""
+}

@@ -12,6 +12,7 @@ module "EC2" {
   rsa_pem_key_name = var.root_rsa_pem_key_name
   pem_file_download_path = var.root_pem_file_download_path
   security_group_name = var.root_security_group_name
+  VPC_ID = module.VPC.VPC_ID
   Public_Subnet_id = module.VPC.Public_Subnet_id
 }
 

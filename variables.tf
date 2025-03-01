@@ -28,7 +28,7 @@ variable "root_subnet_cidr_block" {
 }
 variable "root_route_table_cidr" {
   type = string
-  default = "10.1.0.0/24"
+  default = "0.0.0.0/0"
 }
 variable "root_Prometheus_public_RT" {
   type = string
@@ -38,5 +38,5 @@ variable "root_Prometheus_public_RT" {
 #-------------------------------------------------------------------------------------
 variable "user_name" {
   type = string
-  default = "root"
+  default = "ubuntu"
 }
