@@ -45,7 +45,7 @@ resource "aws_vpc_security_group_egress_rule" "SG_all_traffic_egress" {
 # for creation of ec2 instances using all above resources
 resource "aws_instance" "Master" {
   count = 1
-  ami           = "ami-0e1bed4f06a3b463d"
+  ami           = "ami-04b4f1a9cf54c11d0"
   instance_type = var.master_instance_type
   key_name = aws_key_pair.rsa_pem_key_create.key_name    # calling the created pem key
   subnet_id = var.Public_Subnet_id
@@ -57,7 +57,7 @@ resource "aws_instance" "Master" {
 }
 resource "aws_instance" "Workers" {
   count = 2
-  ami           = "ami-0e1bed4f06a3b463d" 
+  ami           = "ami-04b4f1a9cf54c11d0" 
   instance_type = var.Worker_instance_type
   key_name = aws_key_pair.rsa_pem_key_create.key_name    # calling the created pem key
   subnet_id = var.Public_Subnet_id     # calling the subnet from other module, possible only after mentioning it in root module
